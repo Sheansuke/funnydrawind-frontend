@@ -6,7 +6,7 @@ interface Props {
   user: string;
 }
 
-const Board: React.FC<Props> = ({ user }) => {
+export const Board: React.FC<Props> = ({ user }) => {
   const [operations, setOperations] = useState<any>([]);
 
   const history = useHistory();
@@ -23,16 +23,18 @@ const Board: React.FC<Props> = ({ user }) => {
   };
 
   return (
-    <DrawingBoard
-      userId="Sheansuke" // identify for different players.
-      operations={operations}
-      onChange={boardOperations}
-      style={{
-        width: 1000,
-        height: 500,
-        border: "1px solid red",
-      }}
-    />
+    <>
+      <DrawingBoard
+        userId="Sheansuke" // identify for different players.
+        operations={operations}
+        onChange={boardOperations}
+        style={{
+          width: "100%",
+          height: "100%",
+
+          backgroundColor: "rgba( 30, 41, 59, 0.25 )",
+        }}
+      />
+    </>
   );
 };
-export default Board;

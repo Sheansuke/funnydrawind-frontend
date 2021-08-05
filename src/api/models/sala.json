@@ -1,0 +1,29 @@
+{
+  "creator": "Shean",
+  "createAt": "2017-03-02",
+  "game": {
+    "isStart": false,
+    "isEnd": false,
+    "rounds": 3,
+    "currentRound": 0,
+    "currentPlayer": "",
+    "secondsToDraw": 30,
+    "secondsRemaining": 30,
+    "extraWords": []
+  },
+  "players": [
+    {
+      "avatarUrl": "",
+      "name": "Shean",
+      "points": 0,
+      "rank": 0
+    }
+  ],
+  "chat": [
+    {
+      "avatarUrl": "",
+      "name": "Shean",
+      "message": "hello"
+    }
+  ]
+}
