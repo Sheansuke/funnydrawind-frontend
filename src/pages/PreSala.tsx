@@ -89,7 +89,7 @@ const PreSala = () => {
               "flex flex-col justify-center md:items-end items-center md:mr-8 "
             )}
           >
-            <PreSalaConfig creator={room?.creator} />
+            <PreSalaConfig room={room} roomId={params?.roomId} />
           </div>
           <div
             className={tw(

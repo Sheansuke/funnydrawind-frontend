@@ -1,27 +1,72 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { tw } from "@utils/tailwindClass";
-import { Button } from "@components/reusable/Button";
+import { Room } from "@api/models/room";
+
+// firebase
+import { db } from "@api/firebase/firebase";
+
+// react-router-dom
+import { useHistory } from "react-router-dom";
 
 // redux
 import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
 
+// components
+import { Button } from "@components/reusable/Button";
+
 export interface PreSalaConfigProps {
-  creator?: string;
+  room?: Room;
+  roomId?: string;
+}
+
+interface FormData {
+  rounds?: string;
+  secondsToDraw?: string;
+  extraWords?: string;
 }
 
 export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
-  creator = "",
+  room,
+  roomId,
 }) => {
+  const history = useHistory();
   const player = useSelector((state: RootState) => state.playerReducer);
+
+  // if game start push to sala
+  useEffect(() => {
+    if (room?.game?.isStart) {
+      history.push(`/sala`, { room });
+    }
+  }, [room]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: FormData) => {
+    const rounds = data?.rounds;
+    const secondsToDraw = data?.secondsToDraw;
+    const extraWords = data?.extraWords;
+
+    // convert string to array of words
+    const extraWordsArray = extraWords?.split(",");
+
+    db.collection("rooms")
+      .doc(roomId)
+      .update({
+        game: {
+          ...room?.game,
+          isStart: true,
+          rounds: Number(rounds),
+          secondsToDraw: Number(secondsToDraw),
+          secondsRemaining: Number(secondsToDraw),
+          extraWords: extraWordsArray,
+        },
+      });
+  };
 
   return (
     <div
@@ -42,7 +87,7 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
           <label className={tw("text-2xl text-blue-100")}>Rondas</label>
           <select
             {...register("rounds")}
-            disabled={player?.name === creator ? false : true}
+            disabled={player?.name === room?.creator ? false : true}
             placeholder="Rondas"
             className={tw(
               "shadow appearance-none  rounded py-2 px-3 text-gray-700 leading-tight  focus:outline-none focus:shadow-outline",
@@ -61,8 +106,8 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
             Segundos para dibujar
           </label>
           <select
-            {...register("segundosParaDibujar")}
-            disabled={player?.name === creator ? false : true}
+            {...register("secondsToDraw")}
+            disabled={player?.name === room?.creator ? false : true}
             placeholder="Segundos para dibujar"
             className={tw(
               "shadow appearance-none  rounded py-2 px-3 text-gray-700 leading-tight  focus:outline-none focus:shadow-outline",
@@ -82,11 +127,10 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
           </label>
           <input
             type="text"
-            {...register("agregarPalabras")}
-            disabled={player?.name === creator ? false : true}
+            {...register("extraWords")}
+            disabled={player?.name === room?.creator ? false : true}
             placeholder="Escriba las palabras separadas
           por una coma."
-            {...register}
             className={tw(
               "shadow appearance-none  rounded py-2 px-3 text-gray-700 leading-tight  focus:outline-none focus:shadow-outline",
               "w-full"
@@ -96,13 +140,13 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
 
         <div className={tw("flex justify-center")}>
           <Button
-            disabled={player?.name === creator ? false : true}
+            disabled={player?.name === room?.creator ? false : true}
             text="¡Empezar!"
             type="submit"
-            buttonbgColor={player?.name === creator ? "green" : "gray"}
+            buttonbgColor={player?.name === room?.creator ? "green" : "gray"}
             tailwindClass={tw(
               "w-full h-16 mt-4 ",
-              player?.name !== creator && "cursor-not-allowed"
+              player?.name !== room?.creator && "cursor-not-allowed"
             )}
           />
         </div>
