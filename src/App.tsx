@@ -1,21 +1,39 @@
+import { useBeforeunload } from "react-beforeunload";
+
 // Logo
 import FunnyDrawing from "@styles/statics/FunnyDrawing.svg";
+
+// redux
+import { RootState } from "@redux/store";
+import { useSelector } from "react-redux";
+
+// firebase
+import { db } from "@api/firebase/firebase";
 
 // tailwind utility
 import { tw } from "@utils/tailwindClass";
 
 // React Router
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
+
+import SwitchRoutes from "./SwitchRoutes";
 
 // Particles
 import { BgParticles } from "@components/BgParticles/BgParticles";
 
-// PAGES
-import Home from "@pages/Home";
-import PreSala from "./pages/PreSala";
-import Sala from "./pages/Sala";
-
 export const App = () => {
+  const room = useSelector((state: RootState) => state.roomReducer);
+  const player = useSelector((state: RootState) => state.playerReducer);
+
+  // Update players when user leave page
+  useBeforeunload((event) => {
+    db.collection("rooms")
+      .doc(room.id)
+      .update({
+        players: room.players.filter((p: any) => p.name !== player.name),
+      });
+  });
+
   return (
     <Router>
       <BgParticles />
@@ -31,19 +49,7 @@ export const App = () => {
           <svg />
         </header>
         <main className={tw("flex flex-grow")}>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-
-            <Route path="/preSala/:roomId">
-              <PreSala />
-            </Route>
-
-            <Route path="/sala">
-              <Sala />
-            </Route>
-          </Switch>
+          <SwitchRoutes />
         </main>
       </div>
     </Router>

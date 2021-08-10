@@ -1,6 +1,5 @@
-export interface Chat {
+export default interface Chat {
     avatarUrl: string;
     name: string;
     message: string;
-
 }

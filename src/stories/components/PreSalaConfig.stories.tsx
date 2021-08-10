@@ -1,7 +1,7 @@
 import React from "react";
 import "../../index.css";
 import { Meta } from "@storybook/react";
-import { PreSalaConfig } from "@components/PreSalaConfig/PreSalaConfig";
+import PreSalaConfig from "@components/PreSalaConfig/PreSalaConfig";
 
 export default {
   component: PreSalaConfig,

@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { tw } from "@utils/tailwindClass";
 import { Button } from "@components/reusable/Button";
 import { Avatar } from "@components/Avatar/Avatar";
 
 // redux
-import { RootState } from "@redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setPlayer } from "@redux/player/playerSlice";
 
 export interface ChooseAvatarModalProps {
@@ -38,9 +37,6 @@ export const ChooseAvatarModal: React.FC<ChooseAvatarModalProps> = ({
   setIsOpen,
 }) => {
   const dispatch = useDispatch();
-  const player = useSelector((state: RootState) => state.playerReducer);
-
-  const [url, setUrl] = useState<string>("");
 
   const closeModal = () => {
     setIsOpen(false);
@@ -52,7 +48,6 @@ export const ChooseAvatarModal: React.FC<ChooseAvatarModalProps> = ({
         avatarUrl: e?.target?.currentSrc,
       })
     );
-    setUrl(e?.target?.currentSrc);
 
     closeModal();
   };

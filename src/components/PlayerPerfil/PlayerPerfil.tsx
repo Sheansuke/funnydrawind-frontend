@@ -25,7 +25,7 @@ export const PlayerPerfil: React.FC<PlayerPerfilProps> = ({
       )}
     >
       <div className={tw("flex items-center ")}>
-        <Avatar url={avatarUrl} />
+        <Avatar url={avatarUrl} width={16} />
 
         <div>
           <p className={tw("ml-2 font-semibold text-blue-100")}>{name}</p>

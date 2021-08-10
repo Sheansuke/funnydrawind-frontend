@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { tw } from "@utils/tailwindClass";
 
 // firebase
-import { db } from "@api/firebase/firebase";
+import { getNews } from "@api/fetch/getNews";
 
 // Components
-
 import { HomeCreateRoom } from "@components/HomeCreateRoom/HomeCreateRoom";
 import { News } from "@components/News/News";
 import { NewsItemProps } from "@components/News/NewsItem";
@@ -13,15 +12,9 @@ import { NewsItemProps } from "@components/News/NewsItem";
 const Home = () => {
   const [newsItems, setNewsItems] = useState<NewsItemProps[]>([]);
 
+  // news collection
   useEffect(() => {
-    db.collection("news")
-      .get()
-      .then((querySnapshot) => {
-        const newsItemsCollection = querySnapshot.docs.map((doc) => doc.data());
-        // do something with documents
-
-        setNewsItems(newsItemsCollection);
-      });
+    getNews(setNewsItems);
   }, []);
 
   return (

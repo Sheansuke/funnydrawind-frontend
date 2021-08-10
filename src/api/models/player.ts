@@ -1,7 +1,4 @@
-export interface Player {
-    avatarUrl?: string;
-    name?: string;
-    points?: number;
-    rank?: number;
+import { PlayerPerfilProps } from "@components/PlayerPerfil/PlayerPerfil";
 
-}
+
+export default PlayerPerfilProps

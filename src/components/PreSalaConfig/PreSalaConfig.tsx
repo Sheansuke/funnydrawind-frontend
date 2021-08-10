@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import { useForm } from "react-hook-form";
 import { tw } from "@utils/tailwindClass";
 import { Room } from "@api/models/room";
@@ -11,13 +11,13 @@ import { useHistory } from "react-router-dom";
 
 // redux
 import { RootState } from "@redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 // components
 import { Button } from "@components/reusable/Button";
 
 export interface PreSalaConfigProps {
-  room?: Room;
+  room: Room;
   roomId?: string;
 }
 
@@ -27,17 +27,14 @@ interface FormData {
   extraWords?: string;
 }
 
-export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
-  room,
-  roomId,
-}) => {
+const PreSalaConfig: React.FC<PreSalaConfigProps> = ({ room, roomId }) => {
   const history = useHistory();
   const player = useSelector((state: RootState) => state.playerReducer);
 
   // if game start push to sala
   useEffect(() => {
     if (room?.game?.isStart) {
-      history.push(`/sala`, { room });
+      history.push(`/sala`, { room, roomId: room.id });
     }
   }, [room]);
 
@@ -55,7 +52,7 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
     const extraWordsArray = extraWords?.split(",");
 
     db.collection("rooms")
-      .doc(roomId)
+      .doc(room.id)
       .update({
         game: {
           ...room?.game,
@@ -154,3 +151,5 @@ export const PreSalaConfig: React.FC<PreSalaConfigProps> = ({
     </div>
   );
 };
+
+export default memo(PreSalaConfig);

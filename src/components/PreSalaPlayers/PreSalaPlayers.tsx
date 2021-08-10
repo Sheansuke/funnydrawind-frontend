@@ -31,16 +31,14 @@ export const PreSalaPlayers: React.FC<PresaSalaPlayersProps> = ({
         {players.length > 0 ? (
           <Anime opacity={[0, 1]} translate={[-64, 0]} delay={2}>
             {players?.map((player, index) => (
-              <Anime opacity={[0, 1]} translate={[-64, 0]} delay={2}>
-                <li key={index}>
-                  <PlayerPerfil
-                    name={player?.name}
-                    avatarUrl={player?.avatarUrl}
-                    points={player?.points}
-                    rank={player?.rank}
-                  />
-                </li>
-              </Anime>
+              <li key={index}>
+                <PlayerPerfil
+                  name={player?.name}
+                  avatarUrl={player?.avatarUrl}
+                  points={player?.points}
+                  rank={player?.rank}
+                />
+              </li>
             ))}
           </Anime>
         ) : (

@@ -1,36 +1,36 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
 import { tw } from "@utils/tailwindClass";
 import { Avatar } from "@components/Avatar/Avatar";
 import { ChooseAvatarButton } from "@components/Avatar/ChooseAvatarButton";
 import { Button } from "@components/reusable/Button";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
 // firebase
-import { db } from "@api/firebase/firebase";
+import { updatePlayers } from "@api/fetch/updatePlayers";
 
 // redux
 import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setPlayer } from "@redux/player/playerSlice";
-import { setRoomId } from "@redux/roomId/roomIdSlice";
+import { setRoomGlobalState } from "@redux/room/roomSlice";
 
 // api
 import { createRoom } from "@api/fetch/createRoom";
 
 export interface HomeCreateRoomProps {
   isPlayeName?: boolean;
-  setIsPlayerName?: (...args: any[]) => any;
+  isName?: boolean;
 }
 
 export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
-  isPlayeName = true,
-  setIsPlayerName,
+  isName = true,
 }) => {
   const [playerName, setPlayerName] = useState("");
   const history = useHistory<any>();
 
   // redux
   const player = useSelector((state: RootState) => state.playerReducer);
+  const room = useSelector((state: RootState) => state.roomReducer);
 
   const dispatch = useDispatch();
 
@@ -58,8 +58,8 @@ export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
 
       // update roomId on state
       dispatch(
-        setRoomId({
-          roomId: newRoomId,
+        setRoomGlobalState({
+          id: newRoomId,
         })
       );
 
@@ -67,21 +67,17 @@ export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
     }
   };
 
-  const preSala = history?.location?.state?.from.match(/preSala/g)[0];
-  const noPlayerName = history?.location?.state?.hasPlayerName;
-
   const goToRoom = () => {
-    if (setIsPlayerName) {
-      dispatch(
-        setPlayer({
-          avatarUrl: player.avatarUrl,
-          name: playerName,
-          points: 0,
-          rank: 0,
-        })
-      );
-      setIsPlayerName(true);
-    }
+    dispatch(
+      setPlayer({
+        avatarUrl: player.avatarUrl,
+        name: playerName,
+        points: 0,
+        rank: 0,
+      })
+    );
+
+    updatePlayers(room.id, room.players, player);
   };
 
   return (
@@ -115,7 +111,7 @@ export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
 
         {/* Crear Sala */}
 
-        {isPlayeName ? (
+        {isName ? (
           <Button
             text="Crear Sala"
             onClick={newRoom}

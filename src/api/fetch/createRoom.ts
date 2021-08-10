@@ -1,8 +1,8 @@
 import { db } from "@api/firebase/firebase";
-import { Player } from "@api/models/player";
+import IPlayer from "@api/models/player";
 
 
-export const createRoom = async (creator: string, player: Player) => {
+export const createRoom = async (creator: string, player: IPlayer): Promise<string> => {
     const newRoom = await db.collection("rooms").add({
         creator: creator,
         createdAt: new Date().toISOString(),
@@ -14,8 +14,11 @@ export const createRoom = async (creator: string, player: Player) => {
             currentPlayer: creator,
             secondsToDraw: 30,
             secondsRemaining: 30,
-            extraWords: []
+            extraWords: [],
+
+
         },
+        operations: [],
         players: [],
         chat: []
     }).then(doc => doc)

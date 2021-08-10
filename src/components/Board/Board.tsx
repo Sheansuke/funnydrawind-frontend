@@ -1,29 +1,49 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import DrawingBoard from "react-drawing-board";
 
-interface Props {
-  user: string;
+import Player from "@api/models/player";
+
+import { useHistory } from "react-router-dom";
+
+// firebase
+import { Room } from "@api/models/room";
+import { updateOperations } from "@api/fetch/updateOperations";
+import { getOperations } from "@api/fetch/getOperations";
+import { current } from "@reduxjs/toolkit";
+
+export interface BoardProps {
+  player: Player;
+  roomId: string;
+  room: Room;
 }
 
-export const Board: React.FC<Props> = ({ user }) => {
-  const [operations, setOperations] = useState<any>([]);
-
+export const Board: React.FC<BoardProps> = ({ player, roomId, room }) => {
+  console.log("🚀 ~ file: Board.tsx ~ line 21 ~ room", room);
   const history = useHistory();
-  useEffect(() => {
-    if (!user) history.push("/");
-  }, [history, user]);
+  const [operations, setOperations] = useState<any>([]);
+  const currentPlayer = room.game.currentPlayer;
+  console.log("🚀 ~ file: Board.tsx ~ line 24 ~ currentPlayer", currentPlayer);
 
   const boardOperations = (newOperation: any, afterOperation: any) => {
-    const boardUser = newOperation?.userId;
-    console.log("🚀 ~ file: Board.tsx ~ line 7 ~ operations", operations);
-    console.log("change");
+    const parseOperations = {
+      ...newOperation,
+      pos: "",
+    };
 
-    setOperations(afterOperation);
+    // const boardUser = newOperation?.userId;
+    updateOperations(room.id, parseOperations);
   };
 
+  useEffect(() => {
+    if (room) {
+      getOperations(room.id, setOperations);
+    } else {
+      history.push("/");
+    }
+  }, []);
+
   return (
-    <>
+    <div className="relative bg-blue-100 ">
       <DrawingBoard
         userId="Sheansuke" // identify for different players.
         operations={operations}
@@ -35,6 +55,16 @@ export const Board: React.FC<Props> = ({ user }) => {
           backgroundColor: "rgba( 30, 41, 59, 0.25 )",
         }}
       />
-    </>
+
+      {currentPlayer !== player.name && (
+        <div
+          className="absolute top-0 left-0 z-50 bg-gray-900 bg-clip-padding backdrop-blur-xl bg-opacity-20"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        ></div>
+      )}
+    </div>
   );
 };
