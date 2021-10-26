@@ -11,6 +11,7 @@ import { getRoom } from "@api/fetch/getRoom";
 // redux
 import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
+import { setRoomGlobalState } from "@redux/room/roomSlice";
 
 // components
 import { PreSalaNoName } from "./PreSalaNoName";
@@ -25,7 +26,6 @@ const PreSala = () => {
   const player = useSelector((state: RootState) => state.playerReducer);
   const room = useSelector((state: RootState) => state.roomReducer);
 
-  console.log("Hola");
   // Get Room data
   useEffect(() => {
     getRoom(params?.roomId, dispatch, history);

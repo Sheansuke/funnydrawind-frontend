@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 // Logo
@@ -33,6 +34,8 @@ export const App = () => {
         players: room.players.filter((p: any) => p.name !== player.name),
       });
   });
+
+  useEffect(() => {}, [room]);
 
   return (
     <Router>

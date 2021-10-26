@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { tw } from "@utils/tailwindClass";
 
 // firebase
 import { getNews } from "@api/fetch/getNews";
+
+// redux
+import { useDispatch } from "react-redux";
+import { setRoomGlobalState } from "@redux/room/roomSlice";
 
 // Components
 import { HomeCreateRoom } from "@components/HomeCreateRoom/HomeCreateRoom";
@@ -10,11 +14,27 @@ import { News } from "@components/News/News";
 import { NewsItemProps } from "@components/News/NewsItem";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [newsItems, setNewsItems] = useState<NewsItemProps[]>([]);
 
   // news collection
   useEffect(() => {
     getNews(setNewsItems);
+  }, []);
+
+  // clear room state if user leaving route
+  useEffect(() => {
+    dispatch(
+      setRoomGlobalState({
+        id: "",
+        creator: "",
+        createAt: "",
+        game: [],
+        players: [],
+        chat: [],
+        operations: [],
+      })
+    );
   }, []);
 
   return (

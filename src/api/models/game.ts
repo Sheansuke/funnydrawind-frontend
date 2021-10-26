@@ -4,8 +4,10 @@ export interface Game {
     rounds: number;
     currentRound: number;
     currentPlayer: string;
+    currentPlayerNumber: number;
     secondsToDraw: number;
     secondsRemaining: number;
+    words: string[];
     extraWords: string[];
 
 }

@@ -12,8 +12,10 @@ const initialState: Room = {
         rounds: 3,
         currentRound: 1,
         currentPlayer: "",
+        currentPlayerNumber: 0,
         secondsToDraw: 30,
         secondsRemaining: 30,
+        words: [],
         extraWords: []
 
     },

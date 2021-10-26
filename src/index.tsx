@@ -1,4 +1,5 @@
-import "./wdyr";
+// activate below above is you want watch re-renders reason
+// import "./wdyr";
 import ReactDOM from "react-dom";
 import "./index.css";
 

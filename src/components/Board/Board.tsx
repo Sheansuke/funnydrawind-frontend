@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DrawingBoard from "react-drawing-board";
 
 import Player from "@api/models/player";
@@ -9,7 +9,6 @@ import { useHistory } from "react-router-dom";
 import { Room } from "@api/models/room";
 import { updateOperations } from "@api/fetch/updateOperations";
 import { getOperations } from "@api/fetch/getOperations";
-import { current } from "@reduxjs/toolkit";
 
 export interface BoardProps {
   player: Player;
@@ -17,12 +16,13 @@ export interface BoardProps {
   room: Room;
 }
 
-export const Board: React.FC<BoardProps> = ({ player, roomId, room }) => {
-  console.log("🚀 ~ file: Board.tsx ~ line 21 ~ room", room);
+export const Board: React.FC<BoardProps> = ({ player, room }) => {
+  let prevRoom = useRef<Room>(room);
+  console.log("🚀 ~ file: Board.tsx ~ line 21 ~ prevRoom", prevRoom.current);
   const history = useHistory();
+
   const [operations, setOperations] = useState<any>([]);
   const currentPlayer = room.game.currentPlayer;
-  console.log("🚀 ~ file: Board.tsx ~ line 24 ~ currentPlayer", currentPlayer);
 
   const boardOperations = (newOperation: any, afterOperation: any) => {
     const parseOperations = {
@@ -31,8 +31,19 @@ export const Board: React.FC<BoardProps> = ({ player, roomId, room }) => {
     };
 
     // const boardUser = newOperation?.userId;
-    updateOperations(room.id, parseOperations);
+    updateOperations(room.id, parseOperations, false);
   };
+
+  // if user change reset board
+  useEffect(() => {
+    if (
+      prevRoom.current.game.currentPlayerNumber !==
+      room.game.currentPlayerNumber
+    ) {
+      updateOperations(room.id, [], true);
+      prevRoom.current = room;
+    }
+  }, [room]);
 
   useEffect(() => {
     if (room) {

@@ -3,10 +3,9 @@ import { tw } from "@utils/tailwindClass";
 import { useForm } from "react-hook-form";
 import { ChatMessageProps } from "@components/Chat/ChatMessage";
 import { ChatMessage } from "@components/Chat/ChatMessage";
-import Anime from "react-anime";
+import { motion } from "framer-motion";
 
 // firebase
-import { db } from "@api/firebase/firebase";
 import { postMessage } from "@api/fetch/postMessage";
 import IPlayer from "@api/models/player";
 
@@ -16,6 +15,7 @@ export interface ChatProps {
   roomId: string;
 }
 
+// COMPONENT
 export const Chat: React.FC<ChatProps> = ({
   messages = [],
   player,
@@ -34,6 +34,7 @@ export const Chat: React.FC<ChatProps> = ({
 
   // this allow auto-scrool when sending a message
   const messageEl = useRef<any>(null);
+  const chatMessageLiRef = useRef<any>(null);
   useEffect(() => {
     if (messageEl) {
       messageEl?.current?.addEventListener("DOMNodeInserted", (event: any) => {
@@ -62,15 +63,19 @@ export const Chat: React.FC<ChatProps> = ({
         {messages.length > 0 ? (
           <>
             {messages?.map((message, index) => (
-              <Anime easing={"easeOutSine"} translateY={[100, 0]}>
-                <li key={index}>
+              <motion.div
+                initial={{ x: -100 }}
+                animate={{ x: 0 }}
+                transition={{ ease: "easeOut", duration: 1 }}
+              >
+                <li key={index} ref={chatMessageLiRef}>
                   <ChatMessage
                     name={message?.name}
                     avatarUrl={message?.avatarUrl}
                     message={message?.message}
                   />
                 </li>
-              </Anime>
+              </motion.div>
             ))}
           </>
         ) : (

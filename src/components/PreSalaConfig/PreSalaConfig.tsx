@@ -61,6 +61,7 @@ const PreSalaConfig: React.FC<PreSalaConfigProps> = ({ room, roomId }) => {
           secondsToDraw: Number(secondsToDraw),
           secondsRemaining: Number(secondsToDraw),
           extraWords: extraWordsArray,
+          words: [...room?.game?.words].concat(extraWordsArray ?? []),
         },
       });
   };

@@ -17,8 +17,11 @@ import { Chat } from "@components/Chat/Chat";
 import { Board } from "@components/Board/Board";
 import { PreSalaPlayers } from "@components/PreSalaPlayers/PreSalaPlayers";
 
+import { Game } from "@game/Game";
+import { memo } from "react";
 const Sala = () => {
   const history = useHistory<any>();
+
   const player = useSelector((state: RootState) => state.playerReducer);
   const room = useSelector((state: RootState) => state.roomReducer);
 
@@ -37,12 +40,18 @@ const Sala = () => {
     }
   }, [room]);
 
+  useEffect(() => {
+    const game = new Game(room, player);
+    // game.startSecondsToDraw();
+  }, [room]);
+
   return (
     <div
       className={tw(
         "flex flex-col md:flex-row md:justify-around items-center  w-screen gap-2 overflow-hidden"
       )}
     >
+      {/* CHAT */}
       <motion.div
         initial={{ x: -500 }}
         animate={{ x: 0 }}
@@ -56,6 +65,7 @@ const Sala = () => {
         </div>
       </motion.div>
 
+      {/* BOARD */}
       <motion.div
         initial={{ y: -500 }}
         animate={{ y: 0 }}
@@ -64,7 +74,9 @@ const Sala = () => {
         <div className={tw("flex  flex-grow flex-col  ")}>
           <div className={tw("flex flex-grow justify-between")}>
             <p className={tw("text-blue-100 text-sm")}>Turno de: Sheansuke</p>
-            <p className={tw("text-blue-100 text-sm")}>Tiempo restante: 30s</p>
+            <p
+              className={tw("text-blue-100 text-sm")}
+            >{`Tiempo restante: ${room.game.secondsRemaining}`}</p>
           </div>
           <div className={tw("rounded-lg overflow-hidden")}>
             <Board player={player} roomId={room.id} room={room} />
@@ -72,6 +84,7 @@ const Sala = () => {
         </div>
       </motion.div>
 
+      {/* PLAYERS */}
       <motion.div
         initial={{ x: 500 }}
         animate={{ x: 0 }}
@@ -85,4 +98,4 @@ const Sala = () => {
   );
 };
 
-export default Sala;
+export default memo(Sala);

@@ -38,12 +38,16 @@ export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
     if (!playerName) return alert("No vas a jugar sin nombre de jugador o si?");
 
     // create Room on firebase and return id
-    const newRoomId = await createRoom(playerName, {
-      avatarUrl: player.avatarUrl,
-      name: playerName,
-      points: 0,
-      rank: 0,
-    });
+    const newRoomId = await createRoom(
+      playerName,
+      {
+        avatarUrl: player.avatarUrl,
+        name: playerName,
+        points: 0,
+        rank: 0,
+      },
+      "spanish"
+    );
 
     // update player on state
     if (newRoomId) {
@@ -68,16 +72,22 @@ export const HomeCreateRoom: React.FC<HomeCreateRoomProps> = ({
   };
 
   const goToRoom = () => {
-    dispatch(
-      setPlayer({
-        avatarUrl: player.avatarUrl,
-        name: playerName,
-        points: 0,
-        rank: 0,
-      })
-    );
+    const isInRoom = room.players.find((p) => p.name === playerName);
 
-    updatePlayers(room.id, room.players, player);
+    if (!isInRoom) {
+      dispatch(
+        setPlayer({
+          avatarUrl: player.avatarUrl,
+          name: playerName,
+          points: 0,
+          rank: 0,
+        })
+      );
+
+      updatePlayers(room.id, room.players, player);
+    } else {
+      alert("Ya existe un usuario en esta sala con ese nombre, intenta otro!");
+    }
   };
 
   return (
