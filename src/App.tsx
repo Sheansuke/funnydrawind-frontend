@@ -26,7 +26,7 @@ export const App = () => {
   const room = useSelector((state: RootState) => state.roomReducer);
   const player = useSelector((state: RootState) => state.playerReducer);
 
-  // Update players when user leave page
+  // Update players when user leave page :D
   useBeforeunload((event) => {
     db.collection("rooms")
       .doc(room.id)
